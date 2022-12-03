@@ -1,6 +1,6 @@
 ## About
 
-TypeORM is an Object Relational Mapper for SQL Databases ( Its now experimental for MongoDB). With TypeORM SQL queries can be done easily through couple of functions, which otherwise would be very difficult to do with SQL drivers.
+TypeORM is an Object Relational Mapper for SQL Databases ( Its now experimental for MongoDB). With TypeORM SQL queries can be done easily through few functions, which otherwise would be very difficult to do with SQL drivers.
 
 ## Terminologies
 
