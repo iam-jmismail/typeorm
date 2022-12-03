@@ -24,9 +24,9 @@ export class Groups extends TimeStamp {
   @Column({
     default: false,
   })
-  is_banned: boolean;
+  is_enabled: boolean;
 
   /** Relationships */
-  @ManyToMany(() => User, (user) => user.groups)
-  users: User[];
+  // @ManyToMany(() => User, (user) => user.groups)
+  // users: User[];
 }

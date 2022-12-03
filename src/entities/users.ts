@@ -30,7 +30,7 @@ export class User extends TimeStamp {
   @OneToMany(() => Post, (post) => post.user)
   posts: Post[];
 
-  @ManyToMany(() => Groups, (group) => group.users)
+  @ManyToMany(() => Groups)
   @JoinTable({
     name: "users_groups_map",
   })

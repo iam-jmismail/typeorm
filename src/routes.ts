@@ -1,6 +1,8 @@
 import { Router } from "express";
+import { In } from "typeorm";
 import { AppDataSource } from "./db";
 import { Comments } from "./entities/comments";
+import { Groups } from "./entities/groups";
 import { Post } from "./entities/posts";
 import { User } from "./entities/users";
 
@@ -9,15 +11,22 @@ const router = Router();
 /** Create a new Post */
 router.post("/users/create", async (req, res, next) => {
   try {
-    const { first_name, last_name } = req.body;
+    const { first_name, last_name, group_id } = req.body;
+
+    if (!Array.isArray(group_id)) throw new Error("group_id must be an array");
+
+    const groups = await Groups.find({ where: { id: In([...group_id]) } });
+
+    if (!groups) throw new Error("No Groups Found");
 
     const user = new User();
     user.first_name = first_name;
     user.last_name = last_name;
+    user.groups = [...groups];
 
     await AppDataSource.manager.save(user);
 
-    return res.status(200).send({ message: "User Added", results: [] });
+    return res.status(200).send({ message: "User Added", results: groups });
   } catch (error) {
     next(error);
   }
@@ -153,6 +162,41 @@ router.get("/comments/:post_id", async (req, res, next) => {
     return res
       .status(200)
       .send({ message: "Commented Successfully", results: comments });
+  } catch (error) {
+    next(error);
+  }
+});
+
+/** Create new groups  */
+router.post("/groups/create", async (req, res, next) => {
+  try {
+    const { name, description } = req.body;
+
+    const group = new Groups();
+    group.name = name;
+    group.description = description;
+
+    await AppDataSource.manager.save(group);
+
+    return res.status(200).send({ message: "Group Created", results: [] });
+  } catch (error) {
+    next(error);
+  }
+});
+
+/** Lists all groups */
+router.get("/groups", async (req, res, next) => {
+  try {
+    const groups = await Groups.find({
+      where: {
+        is_deleted: false,
+      },
+      order: {
+        created_at: "DESC", // List by DESC Order
+      },
+    });
+
+    return res.status(200).send({ message: "Fetch Success", results: groups });
   } catch (error) {
     next(error);
   }
